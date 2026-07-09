@@ -17,5 +17,11 @@ export default defineConfig({
     domains: ["static.wixstatic.com"],
   },
 
+  build: {
+    // inline all CSS into the HTML: hashed .css files vanish on redeploy while
+    // the CDN may still serve older HTML that references them → unstyled pages
+    inlineStylesheets: "always",
+  },
+
   output: "server",
 });

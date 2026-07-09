@@ -7,7 +7,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (context.request.method === "GET" && response.headers.get("content-type")?.includes("text/html")) {
     response.headers.set(
       "Cache-Control",
-      "public, max-age=0, s-maxage=600, stale-while-revalidate=86400"
+      "public, max-age=0, s-maxage=600, stale-while-revalidate=300"
     );
   }
   return response;
