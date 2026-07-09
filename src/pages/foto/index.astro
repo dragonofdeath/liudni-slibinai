@@ -12,7 +12,7 @@ const galleries = await getGalleries();
       const imgs = galleryImages(g);
       return (
         <a class="card" href={`/foto/${g.slug}`}>
-          {imgs[0] && <img src={imgs[0]} alt={g.title} loading="lazy" />}
+          {imgs[0] && <img src={imgs[0].url} width={imgs[0].w} height={imgs[0].h} alt={g.title} loading="lazy" />}
           <div class="card-body">
             <h3>{g.title}</h3>
             <span class="muted small">{imgs.length} nuotr.</span>

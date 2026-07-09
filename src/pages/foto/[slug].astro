@@ -11,9 +11,9 @@ const imgs = galleryImages(gallery);
 <Layout title={gallery.title}>
   <h1 class="page-title">{gallery.title}</h1>
   <div class="masonry">
-    {imgs.map((src, i) => (
-      <a href={src} target="_blank" rel="noopener">
-        <img src={src} alt={`${gallery.title} — ${i + 1}`} loading="lazy" />
+    {imgs.map((img, i) => (
+      <a href={img.url} target="_blank" rel="noopener">
+        <img src={img.url} width={img.w} height={img.h} alt={`${gallery.title} — ${i + 1}`} loading="lazy" />
       </a>
     ))}
   </div>
@@ -24,7 +24,7 @@ const imgs = galleryImages(gallery);
   .masonry { columns: 3 280px; column-gap: 1rem; margin-bottom: 2rem; }
   .masonry a { display: block; margin-bottom: 1rem; break-inside: avoid; }
   .masonry img {
-    width: 100%; display: block; border-radius: 4px;
+    width: 100%; height: auto; display: block; border-radius: 4px;
     border: 1px solid var(--line); transition: border-color 0.2s ease;
   }
   .masonry a:hover img { border-color: var(--gold); }

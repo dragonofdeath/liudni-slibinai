@@ -110,9 +110,16 @@ export const getGalleries = () =>
 export const getGalleryBySlug = async (slug: string) =>
   (await safeFind<Gallery>(() => query("galleries").eq("slug", slug).limit(1).find()))[0] ?? null;
 
-export function galleryImages(g: Gallery): string[] {
+export interface GalleryImage {
+  url: string;
+  w?: number;
+  h?: number;
+}
+
+export function galleryImages(g: Gallery): GalleryImage[] {
   try {
-    return JSON.parse(g.images);
+    const parsed = JSON.parse(g.images) as (string | GalleryImage)[];
+    return parsed.map((e) => (typeof e === "string" ? { url: e } : e));
   } catch {
     return [];
   }
