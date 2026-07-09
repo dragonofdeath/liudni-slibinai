@@ -111,7 +111,7 @@ main .page-pad { padding-top: 2.5rem; padding-bottom: 4rem; }
   transition: border-color 0.25s ease, transform 0.25s ease;
 }
 .card:hover { border-color: var(--gold); transform: translateY(-3px); }
-.card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; filter: saturate(0.85); }
+.card img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; display: block; filter: saturate(0.85); }
 .card .card-body { padding: 1.1rem 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1; }
 .card h3 { font-size: 1.35rem; margin: 0; }
 .card h3 a { color: var(--fg); }
