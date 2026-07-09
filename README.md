@@ -1,13 +1,31 @@
-# Wix Astro Blank Template
+# liūdni slibinai — band website
 
-Our Astro templates are still in development and subject to change.
+The website of **liūdni slibinai** (liudnislibinai.lt) — a melancholic-ironic Lithuanian
+„grupė“ singing the texts of classic Lithuanian poets, active since 2008.
 
-To use a template, follow the [Wix CLI for Headless Quick Start](https://dev.wix.com/docs/go-headless/develop-your-project/wix-managed-headless/get-started/quick-start), and select the desired template during the setup process.
+Built with [Astro](https://astro.build) on [Wix Managed Headless](https://dev.wix.com/docs/go-headless):
+content lives in Wix CMS collections, the site is server-rendered and hosted on Wix infrastructure.
 
-## Need help?
+## Structure
 
-For documentation and support, check out:
+- `src/pages/` — routes: home, `naujienos` (news + detail), `albumai`, `video`, `foto`
+  (galleries + detail), `tekstai` (lyrics + detail), `apie`, `kontaktai`, `en`, `p/[slug]`
+  (misc migrated pages)
+- `src/lib/cms.ts` — typed `@wix/data` queries for the CMS collections
+  (`posts`, `songs`, `pages`, `albums`, `videos`, `galleries`)
+- `scripts/migrate-wp.mjs` — one-off migration from the old WordPress site
+  (posts, lyrics, pages, albums, video embeds, NextGEN galleries + all media into Wix Media)
 
-- [Wix Headless Documentation](https://dev.wix.com/docs/go-headless)
-- [Wix SDK Documentation](https://dev.wix.com/docs/sdk)
-- [Community on Discord](https://discord.gg/n6TBrSnYTp)
+## Development
+
+```bash
+npm install
+npm run dev        # local dev against the live Wix site
+npm run release    # build + publish to Wix hosting
+```
+
+Content is edited in the Wix dashboard (CMS). To re-run the WordPress migration:
+
+```bash
+node scripts/migrate-wp.mjs --wipe
+```

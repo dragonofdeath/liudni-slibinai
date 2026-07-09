@@ -23,7 +23,7 @@ const [hero, ...latest] = posts;
 
   {hero && (
     <section class="featured">
-      <a href={`/naujienos/${hero.slug}`} class="featured-card">
+      <a href={`/naujienos/${hero.slug}`} class:list={["featured-card", !hero.coverImage && "no-image"]}>
         {hero.coverImage && <img src={hero.coverImage} alt={hero.title} loading="eager" />}
         <div class="featured-body">
           <span class="tag">{hero.categories || "Naujiena"} · {formatDate(hero.date)}</span>
@@ -96,6 +96,7 @@ const [hero, ...latest] = posts;
   .featured-card img { width: 100%; height: 100%; object-fit: cover; min-height: 240px; }
   .featured-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; }
   .featured-body h2 { font-size: 1.6rem; margin: 0; }
+  .featured-card.no-image { grid-template-columns: 1fr; }
   @media (max-width: 720px) { .featured-card { grid-template-columns: 1fr; } }
 
   section { margin-bottom: 3rem; }

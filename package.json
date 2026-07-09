@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "astro": "astro",
-    "dev": "wix dev",
+    "dev": "env -u is_vim wix dev",
     "build": "wix build",
     "wix": "wix",
     "preview": "wix preview",

@@ -354,17 +354,13 @@ console.log(`  ${videos.length} videos parsed`);
 const fotoHtml = posts.find((p) => p.id === 977).content.rendered;
 const galleryDefs = [];
 {
+  // each gallery brick: <a href="...gallery=N"><img alt="Title" ...></a>
   const seen = new Set();
-  const blocks = fotoHtml.split(/<\/a>/);
-  let pendingTitle = "";
-  for (const b of fotoHtml.split(/(?=<)/).join("").split("\n").length ? [fotoHtml] : []) void b;
-  // simpler: match "title ... gallery=N" proximity via ordered scan
-  const re = /(?:>([^<>]{3,80})<)|gallery=(\d+)/g;
+  const re = /<a[^>]*gallery=(\d+)[^>]*>\s*<img[^>]*alt="([^"]*)"/g;
   for (const m of fotoHtml.matchAll(re)) {
-    if (m[1] && stripTags(m[1]).length > 2 && !/^(–|-->|\s*)$/.test(stripTags(m[1]))) pendingTitle = stripTags(m[1]);
-    if (m[2] && !seen.has(m[2])) {
-      seen.add(m[2]);
-      galleryDefs.push({ id: m[2], title: pendingTitle || `Galerija ${m[2]}` });
+    if (!seen.has(m[1])) {
+      seen.add(m[1]);
+      galleryDefs.push({ id: m[1], title: decodeEntities(m[2]).trim() || `Galerija ${m[1]}` });
     }
   }
 }
