@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getPageBySlug } from "../lib/cms";
+
+const page = await getPageBySlug("kontaktai");
+---
+
+<Layout title="Kontaktai">
+  <article>
+    <h1 class="page-title">Kontaktai</h1>
+    {page && <div class="prose" set:html={page.body} />}
+    <p>
+      <a class="btn" href="mailto:info@liudnislibinai.lt">info@liudnislibinai.lt</a>
+    </p>
+    <div class="social">
+      <a href="https://www.instagram.com/liudnislibinai/" target="_blank" rel="noopener">Instagram</a> ·
+      <a href="https://www.youtube.com/@liudnislibinai" target="_blank" rel="noopener">YouTube</a> ·
+      <a href="https://open.spotify.com/artist/6zjXlMyonWlkxRMNrlOIrR" target="_blank" rel="noopener">Spotify</a>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .social { margin-top: 1.5rem; color: var(--paper-dim); }
+</style>

@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getSongs } from "../../lib/cms";
+
+const songs = await getSongs();
+---
+
+<Layout title="Tekstai">
+  <h1 class="page-title">Tekstai</h1>
+  <p class="muted">Mūsų atliekamų dainų tekstai, kuriuos rašo didūs tautos poetai.</p>
+  <ul class="song-list">
+    {songs.map((s) => (
+      <li><a href={`/tekstai/${s.slug}`}>„{s.title}“</a></li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  .song-list {
+    list-style: none; padding: 0;
+    columns: 2 300px; column-gap: 3rem;
+  }
+  .song-list li { margin-bottom: 0.65rem; break-inside: avoid; }
+  .song-list a { font-family: var(--font-display); font-size: 1.15rem; color: var(--paper); }
+  .song-list a:hover { color: var(--ember-soft); }
+</style>

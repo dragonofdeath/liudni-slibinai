@@ -1,22 +1,141 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const fullTitle = title ? `${title} | liūdni slibinai` : `liūdni slibinai | „grupė“`;
+const desc = description ??
+  "Liūdnas lietuvio gyvenimo detales apdainuojanti, teatrališkai išradinga ir muzikaliai sąmoninga „grupė“, gyvuojanti nuo 2008 m.";
+
+const nav = [
+  { href: "/naujienos", label: "Naujienos" },
+  { href: "/albumai", label: "Albumai" },
+  { href: "/video", label: "Video" },
+  { href: "/foto", label: "Foto" },
+  { href: "/tekstai", label: "Tekstai" },
+  { href: "/apie", label: "Apie" },
+  { href: "/kontaktai", label: "Kontaktai" },
+  { href: "/en", label: "EN" },
+];
+const path = Astro.url.pathname;
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Wix Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="lt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={desc} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <a class="wordmark" href="/">liūdni slibinai <span class="grupe">„grupė“</span></a>
+        <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+        <label for="nav-toggle" class="nav-burger" aria-label="Meniu">☰</label>
+        <nav>
+          {nav.map((item) => (
+            <a href={item.href} class:list={[path.startsWith(item.href) && "active"]}>{item.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-social">
+          <a href="https://open.spotify.com/artist/6zjXlMyonWlkxRMNrlOIrR" target="_blank" rel="noopener">Spotify</a>
+          <a href="https://www.youtube.com/@liudnislibinai" target="_blank" rel="noopener">YouTube</a>
+          <a href="https://www.instagram.com/liudnislibinai/" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:info@liudnislibinai.lt">info@liudnislibinai.lt</a>
+        </div>
+        <p class="muted small">© {new Date().getFullYear()} liūdni slibinai. Liūdesys — nuo 2008 m.</p>
+      </div>
+    </footer>
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  header {
+    border-bottom: 1px solid var(--ink-line);
+    background: rgba(20, 22, 28, 0.92);
+    backdrop-filter: blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--paper);
+    white-space: nowrap;
+  }
+  .grupe { color: var(--ember-soft); font-size: 0.85em; }
+  nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+  nav a {
+    color: var(--paper-dim);
+    font-size: 0.92rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  nav a:hover, nav a.active { color: var(--paper); }
+  nav a.active { border-bottom: 2px solid var(--ember); padding-bottom: 2px; }
+
+  #nav-toggle, .nav-burger { display: none; }
+
+  @media (max-width: 760px) {
+    .nav-burger {
+      display: block;
+      color: var(--paper);
+      font-size: 1.4rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    nav {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 0.75rem 0 0.5rem;
+    }
+    #nav-toggle:checked ~ nav { display: flex; }
+  }
+
+  footer { border-top: 1px solid var(--ink-line); }
+  .footer-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 1.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .footer-social { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .footer-social a { color: var(--paper-dim); font-size: 0.92rem; }
+  .footer-social a:hover { color: var(--ember-soft); }
 </style>

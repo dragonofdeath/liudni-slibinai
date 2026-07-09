@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getSongBySlug } from "../../lib/cms";
+
+const { slug } = Astro.params;
+const song = await getSongBySlug(slug!);
+if (!song) return Astro.redirect("/tekstai");
+---
+
+<Layout title={song.title}>
+  <article class="lyrics">
+    <h1 class="page-title">„{song.title}“</h1>
+    <div class="prose" set:html={song.body} />
+  </article>
+  <p><a href="/tekstai">← Visi tekstai</a></p>
+</Layout>
+
+<style>
+  .lyrics .prose { font-family: var(--font-display); font-size: 1.15rem; line-height: 1.8; }
+</style>

@@ -1,0 +1,67 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPosts, formatDate } from "../../lib/cms";
+
+const PER_PAGE = 24;
+const page = Math.max(1, Number(Astro.url.searchParams.get("puslapis")) || 1);
+const activeCategory = Astro.url.searchParams.get("kategorija");
+
+const all = await getPosts(500);
+const categories = [...new Set(
+  all.flatMap((p) => (p.categories || "").split(",").map((c) => c.trim()).filter(Boolean))
+)].sort();
+const filtered = activeCategory
+  ? all.filter((p) => (p.categories || "").includes(activeCategory))
+  : all;
+const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+const posts = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+const pageUrl = (n: number) =>
+  `?${activeCategory ? `kategorija=${encodeURIComponent(activeCategory)}&` : ""}puslapis=${n}`;
+---
+
+<Layout title="Naujienos">
+  <h1 class="page-title">Naujienos</h1>
+
+  <nav class="cat-filter">
+    <a href="?" class:list={[!activeCategory && "active"]}>Visos</a>
+    {categories.map((cat) => (
+      <a
+        href={`?kategorija=${encodeURIComponent(cat)}`}
+        class:list={[activeCategory === cat && "active"]}
+      >{cat}</a>
+    ))}
+  </nav>
+
+  <div class="card-grid">
+    {posts.map((p) => (
+      <article class="card">
+        {p.coverImage && <a href={`/naujienos/${p.slug}`}><img src={p.coverImage} alt={p.title} loading="lazy" /></a>}
+        <div class="card-body">
+          <span class="tag">{formatDate(p.date)}</span>
+          <h3><a href={`/naujienos/${p.slug}`}>{p.title}</a></h3>
+          <p class="muted small">{p.excerpt?.slice(0, 160)}{(p.excerpt?.length ?? 0) > 160 ? "…" : ""}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  {totalPages > 1 && (
+    <nav class="pagination">
+      {page > 1 && <a class="btn" href={pageUrl(page - 1)}>← Naujesnės</a>}
+      <span class="muted small">{page} / {totalPages}</span>
+      {page < totalPages && <a class="btn" href={pageUrl(page + 1)}>Senesnės →</a>}
+    </nav>
+  )}
+</Layout>
+
+<style>
+  .cat-filter { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .cat-filter a {
+    font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--paper-dim); border: 1px solid var(--ink-line);
+    padding: 0.3em 0.9em; border-radius: 999px;
+  }
+  .cat-filter a:hover { color: var(--paper); border-color: var(--ember); }
+  .cat-filter a.active { color: #fff; background: var(--ember); border-color: var(--ember); }
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 1.25rem; margin-top: 2.5rem; }
+</style>

@@ -1,0 +1,24 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getGalleries, galleryImages } from "../../lib/cms";
+
+const galleries = await getGalleries();
+---
+
+<Layout title="Foto">
+  <h1 class="page-title">Foto</h1>
+  <div class="card-grid">
+    {galleries.map((g) => {
+      const imgs = galleryImages(g);
+      return (
+        <a class="card" href={`/foto/${g.slug}`}>
+          {imgs[0] && <img src={imgs[0]} alt={g.title} loading="lazy" />}
+          <div class="card-body">
+            <h3>{g.title}</h3>
+            <span class="muted small">{imgs.length} nuotr.</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</Layout>

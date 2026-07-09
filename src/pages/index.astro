@@ -1,8 +1,113 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import { getPosts, getAlbums, formatDate } from "../lib/cms";
+
+const [posts, albums] = await Promise.all([getPosts(7), getAlbums()]);
+const [hero, ...latest] = posts;
 ---
 
 <Layout>
-	<Welcome />
+  <section class="hero">
+    <h1>liūdni slibinai</h1>
+    <p class="tagline">
+      Liūdnas lietuvio gyvenimo detales apdainuojanti, teatrališkai išradinga ir
+      muzikaliai sąmoninga <em>„grupė“</em> — nuo 2008 m.
+    </p>
+    <div class="hero-actions">
+      <a class="btn" href="https://open.spotify.com/artist/6zjXlMyonWlkxRMNrlOIrR" target="_blank" rel="noopener">
+        Mūsų liūdesio melodijos „Spotify“
+      </a>
+      <a class="btn" href="/albumai">Albumai</a>
+    </div>
+  </section>
+
+  {hero && (
+    <section class="featured">
+      <a href={`/naujienos/${hero.slug}`} class="featured-card">
+        {hero.coverImage && <img src={hero.coverImage} alt={hero.title} loading="eager" />}
+        <div class="featured-body">
+          <span class="tag">{hero.categories || "Naujiena"} · {formatDate(hero.date)}</span>
+          <h2>{hero.title}</h2>
+          <p class="muted">{hero.excerpt}</p>
+        </div>
+      </a>
+    </section>
+  )}
+
+  <section>
+    <div class="section-head">
+      <h2>Naujienos</h2>
+      <a class="small" href="/naujienos">Visos naujienos →</a>
+    </div>
+    <div class="card-grid">
+      {latest.map((p) => (
+        <article class="card">
+          {p.coverImage && <a href={`/naujienos/${p.slug}`}><img src={p.coverImage} alt={p.title} loading="lazy" /></a>}
+          <div class="card-body">
+            <span class="tag">{formatDate(p.date)}</span>
+            <h3><a href={`/naujienos/${p.slug}`}>{p.title}</a></h3>
+            <p class="muted small">{p.excerpt?.slice(0, 140)}{(p.excerpt?.length ?? 0) > 140 ? "…" : ""}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {albums.length > 0 && (
+    <section>
+      <div class="section-head">
+        <h2>Albumai</h2>
+        <a class="small" href="/albumai">Apie albumus →</a>
+      </div>
+      <div class="album-strip">
+        {albums.map((a) => (
+          <a href="/albumai" class="album-tile" title={a.title}>
+            {a.cover && <img src={a.cover} alt={a.title} loading="lazy" />}
+            <span>{a.title}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 </Layout>
+
+<style>
+  .hero { text-align: center; padding: 3.5rem 0 2.5rem; }
+  .hero h1 {
+    font-size: clamp(2.6rem, 8vw, 4.5rem);
+    font-style: italic;
+    margin-bottom: 0.3em;
+  }
+  .tagline { max-width: 38rem; margin: 0 auto 1.75rem; color: var(--paper-dim); font-size: 1.15rem; }
+  .tagline em { color: var(--ember-soft); }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  .featured { margin-bottom: 3rem; }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--ink-soft);
+    border: 1px solid var(--ink-line);
+    border-radius: 6px;
+    overflow: hidden;
+    color: var(--paper);
+  }
+  .featured-card:hover { border-color: var(--ember); }
+  .featured-card img { width: 100%; height: 100%; object-fit: cover; min-height: 240px; }
+  .featured-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; }
+  .featured-body h2 { font-size: 1.6rem; margin: 0; }
+  @media (max-width: 720px) { .featured-card { grid-template-columns: 1fr; } }
+
+  section { margin-bottom: 3rem; }
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.25rem; }
+  .section-head h2 { font-style: italic; margin: 0; }
+
+  .album-strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1.25rem; }
+  .album-tile { display: flex; flex-direction: column; gap: 0.5rem; color: var(--paper-dim); font-size: 0.9rem; }
+  .album-tile img {
+    width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px;
+    border: 1px solid var(--ink-line); transition: border-color 0.2s ease;
+  }
+  .album-tile:hover img { border-color: var(--ember); }
+  .album-tile:hover span { color: var(--paper); }
+</style>

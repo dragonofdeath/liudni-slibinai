@@ -1,0 +1,17 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPostBySlug, formatDate } from "../../lib/cms";
+
+const { slug } = Astro.params;
+const post = await getPostBySlug(slug!);
+if (!post) return Astro.redirect("/naujienos");
+---
+
+<Layout title={post.title} description={post.excerpt}>
+  <article>
+    <span class="tag">{post.categories || "Naujiena"} · {formatDate(post.date)}</span>
+    <h1 class="page-title">{post.title}</h1>
+    <div class="prose" set:html={post.body} />
+  </article>
+  <p><a href="/naujienos">← Visos naujienos</a></p>
+</Layout>

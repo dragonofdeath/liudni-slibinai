@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getPageBySlug } from "../lib/cms";
+
+const page = await getPageBySlug("apie");
+---
+
+<Layout title="Apie">
+  <article>
+    <h1 class="page-title">{page?.title ?? "Kas jie?"}</h1>
+    {page
+      ? <div class="prose" set:html={page.body} />
+      : <p class="muted">Turinys ruošiamas.</p>}
+  </article>
+</Layout>

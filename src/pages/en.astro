@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getPageBySlug } from "../lib/cms";
+
+const page = await getPageBySlug("en");
+---
+
+<Layout title="EN" description="Liūdni slibinai (Sad Dragons) — a theatrical, musically conscious Lithuanian 'band', since 2008.">
+  <article>
+    <h1 class="page-title">{page?.title ?? "EN"}</h1>
+    {page
+      ? <div class="prose" set:html={page.body} />
+      : <p class="muted">Content coming soon.</p>}
+  </article>
+</Layout>

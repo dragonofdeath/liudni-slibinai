@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getVideos } from "../lib/cms";
+
+const videos = await getVideos();
+const sections = [...new Set(videos.map((v) => v.section || "Dainos"))];
+---
+
+<Layout title="Video">
+  <h1 class="page-title">Video</h1>
+  <p class="muted">
+    Daugiau — mūsų <a href="https://www.youtube.com/@liudnislibinai" target="_blank" rel="noopener">YouTube kanale</a>.
+  </p>
+
+  {sections.map((section) => (
+    <section>
+      <h2>{section}</h2>
+      <div class="video-grid">
+        {videos.filter((v) => (v.section || "Dainos") === section).map((v) => (
+          <figure class="video">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${v.youtubeId}`}
+              title={v.title}
+              loading="lazy"
+              allowfullscreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            ></iframe>
+            <figcaption class="muted small">„{v.title}“</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  ))}
+</Layout>
+
+<style>
+  section { margin: 2.5rem 0; }
+  section h2 { font-style: italic; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+  .video { margin: 0; }
+  .video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background: var(--ink-soft); }
+  figcaption { margin-top: 0.4rem; }
+</style>

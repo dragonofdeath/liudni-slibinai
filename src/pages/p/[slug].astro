@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPageBySlug } from "../../lib/cms";
+
+const { slug } = Astro.params;
+const page = await getPageBySlug(slug!);
+if (!page) return Astro.redirect("/");
+---
+
+<Layout title={page.title}>
+  <article>
+    <h1 class="page-title">{page.title}</h1>
+    <div class="prose" set:html={page.body} />
+  </article>
+</Layout>
