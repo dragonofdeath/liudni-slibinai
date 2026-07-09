@@ -13,6 +13,8 @@ export interface Post {
   excerpt?: string;
   body: string;
   coverImage?: string;
+  /** cover was taken from the first image inside the body (avoid showing it twice) */
+  coverInBody?: boolean;
 }
 
 export interface Song {

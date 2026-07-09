@@ -197,7 +197,7 @@ function cleanHtml(html, linkMap) {
 const COLLECTIONS = {
   posts: [
     ["title", "TEXT"], ["slug", "TEXT"], ["date", "TEXT"], ["categories", "TEXT"],
-    ["excerpt", "TEXT"], ["body", "TEXT"], ["coverImage", "IMAGE"],
+    ["excerpt", "TEXT"], ["body", "TEXT"], ["coverImage", "IMAGE"], ["coverInBody", "BOOLEAN"],
   ],
   songs: [["title", "TEXT"], ["slug", "TEXT"], ["body", "TEXT"]],
   pages: [["title", "TEXT"], ["slug", "TEXT"], ["body", "TEXT"]],
@@ -314,6 +314,15 @@ const [posts, wpPages, categories] = await Promise.all([
 console.log(`  ${posts.length} posts, ${wpPages.length} pages, ${categories.length} categories`);
 const catName = Object.fromEntries(categories.map((c) => [c.id, c.name]));
 
+// featured images ("post thumbnails") — the old theme showed one per post
+const featuredIds = [...new Set(posts.map((p) => p.featured_media).filter(Boolean))];
+const featuredUrl = {}; // media id -> source_url
+for (let i = 0; i < featuredIds.length; i += 50) {
+  const batch = await wpFetch(`/wp/v2/media&include=${featuredIds.slice(i, i + 50).join(",")}&per_page=50`);
+  for (const m of batch) featuredUrl[m.id] = normUrl(m.source_url);
+}
+console.log(`  ${Object.keys(featuredUrl).length}/${featuredIds.length} featured images resolved`);
+
 // classify pages: lyrics = pages linked from the Tekstai index (page 12)
 const tekstaiIndex = wpPages.find((p) => p.id === 12);
 const lyricIds = new Set(
@@ -394,6 +403,11 @@ const postRecords = posts.map((p) => ({
   categories: (p.categories || []).map((c) => catName[c]).filter(Boolean).join(", "),
   excerpt: stripTags(p.excerpt?.rendered || "").replace(/\s*(Skaityti daugiau|Read more).*$/i, "").slice(0, 300),
   rawHtml: p.content.rendered,
+  featured: featuredUrl[p.featured_media] || null,
+  ytThumb: (() => {
+    const id = p.content.rendered.match(/(?:youtube\.com\/(?:embed|v)\/|youtu\.be\/)([\w-]{6,})/)?.[1];
+    return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
+  })(),
 }));
 const songRecords = lyricPages.map((p) => ({
   wpId: p.id,
@@ -433,6 +447,11 @@ const allImageUrls = new Set();
 for (const r of [...postRecords, ...songRecords, ...pageRecords]) {
   for (const u of collectImageUrls(r.rawHtml)) allImageUrls.add(u);
 }
+for (const u of Object.values(featuredUrl)) allImageUrls.add(u);
+// youtube thumbnails as covers for video-only posts (no featured, no body image)
+for (const r of postRecords) {
+  if (!r.featured && !collectImageUrls(r.rawHtml)[0] && r.ytThumb) allImageUrls.add(r.ytThumb);
+}
 for (const g of galleries) for (const u of g.images) allImageUrls.add(u);
 for (const a of ALBUMS) allImageUrls.add(normUrl(a.coverWp));
 const toImport = [...allImageUrls];
@@ -451,15 +470,22 @@ for (const [id, fields] of Object.entries(COLLECTIONS)) await ensureCollection(i
 if (WIPE) for (const id of Object.keys(COLLECTIONS)) await wipeCollection(id);
 
 const counts = {};
-counts.posts = await bulkInsert("posts", newsRecords.map((r) => ({
-  title: r.title, slug: r.slug, date: r.date, categories: r.categories,
-  excerpt: r.excerpt, body: cleanHtml(r.rawHtml, linkMap),
-  coverImage: (() => {
-    const first = collectImageUrls(r.rawHtml)[0];
-    const hit = first && mediaCache[first];
-    return hit && !hit.failed ? hit.url : undefined;
-  })(),
-})));
+counts.posts = await bulkInsert("posts", newsRecords.map((r) => {
+  // cover: featured image first; fall back to the first image inside the body
+  const featuredHit = r.featured && mediaCache[r.featured];
+  const firstInBody = collectImageUrls(r.rawHtml)[0];
+  const bodyHit = firstInBody && mediaCache[firstInBody];
+  const ytHit = r.ytThumb && mediaCache[normUrl(r.ytThumb)];
+  const coverImage = featuredHit && !featuredHit.failed ? featuredHit.url
+    : bodyHit && !bodyHit.failed ? bodyHit.url
+    : ytHit && !ytHit.failed ? ytHit.url : undefined;
+  return {
+    title: r.title, slug: r.slug, date: r.date, categories: r.categories,
+    excerpt: r.excerpt, body: cleanHtml(r.rawHtml, linkMap),
+    coverImage,
+    coverInBody: !featuredHit && !!coverImage,
+  };
+}));
 counts.songs = await bulkInsert("songs", songRecords.map((r) => ({
   title: r.title, slug: r.slug, body: cleanHtml(r.rawHtml, linkMap),
 })));
