@@ -15,7 +15,13 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--bg); color-scheme: dark; }
+html {
+  background: var(--bg);
+  color-scheme: dark;
+  /* reserve the scrollbar gutter so short pages don't shift content horizontally */
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
 
 body {
   margin: 0;
