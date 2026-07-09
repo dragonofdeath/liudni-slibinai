@@ -1,32 +1,30 @@
-/* liūdni slibinai — melancholic-ironic, literary, a little theatrical */
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Sans+3:ital,wght@0,300..700;1,300..700&display=swap&subset=latin-ext");
+/* liūdni slibinai — „Rūkas“ design: photographic, elegant, theater-programme */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Karla:ital,wght@0,200..800;1,200..800&display=swap&subset=latin-ext");
 
 :root {
-  --ink: #14161c;          /* stage-dark background */
-  --ink-soft: #1d2027;     /* raised surfaces */
-  --ink-line: #2c3039;     /* hairlines */
-  --paper: #efe9dc;        /* aged-paper text */
-  --paper-dim: #b3ada0;    /* secondary text */
-  --ember: #c05a50;        /* dusty dragon red */
-  --ember-soft: #d98077;
-  --font-display: "Playfair Display", Georgia, serif;
-  --font-body: "Source Sans 3", system-ui, sans-serif;
-  --max: 1080px;
+  --bg: #12151c;
+  --bg-soft: #171b24;
+  --fg: #e9e4d8;
+  --dim: #9a958a;
+  --gold: #c9a24b;
+  --line: #2a2f3a;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --max: 1020px;
 }
 
 * { box-sizing: border-box; }
 
-html { background: var(--ink); color-scheme: dark; }
+html { background: var(--bg); color-scheme: dark; }
 
 body {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1.075rem;
+  font-size: 17px;
+  font-weight: 300;
   line-height: 1.65;
-  color: var(--paper);
-  background:
-    radial-gradient(1200px 500px at 70% -10%, rgba(192, 90, 80, 0.07), transparent 60%),
-    var(--ink);
+  color: var(--fg);
+  background: var(--bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -36,45 +34,66 @@ h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.2;
-  color: var(--paper);
+  color: var(--fg);
   margin: 0 0 0.5em;
 }
 
-a { color: var(--ember-soft); text-decoration: none; }
-a:hover { color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--gold); }
 
-main { flex: 1; width: 100%; max-width: var(--max); margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+main { flex: 1; width: 100%; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+main .page-pad { padding-top: 2.5rem; padding-bottom: 4rem; }
+
+.kicker {
+  font-size: 12px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
 
 .page-title {
-  font-size: clamp(2rem, 5vw, 3rem);
   font-style: italic;
-  border-bottom: 1px solid var(--ink-line);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 5vw, 3rem);
+  border-bottom: 1px solid var(--line);
   padding-bottom: 0.4em;
   margin-bottom: 1em;
 }
 
-.muted { color: var(--paper-dim); }
-.small { font-size: 0.9rem; }
+.muted { color: var(--dim); }
+.small { font-size: 0.88rem; }
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
 
 /* migrated WordPress content */
-.prose { max-width: 46rem; }
+.prose { max-width: 46rem; font-size: 1.02rem; }
 .prose img {
   max-width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 2px;
   display: block;
   margin: 1rem 0;
 }
 .prose p { margin: 0 0 1em; }
-.prose a { text-decoration: underline; text-decoration-color: var(--ink-line); text-underline-offset: 3px; }
-.prose a:hover { text-decoration-color: var(--ember); }
+.prose a { color: var(--gold); }
+.prose a:hover { color: var(--fg); }
 .prose iframe { max-width: 100%; border: 0; }
 .prose blockquote {
-  border-left: 3px solid var(--ember);
+  border-left: 1px solid var(--gold);
   margin: 1.5em 0;
   padding: 0.25em 0 0.25em 1.25em;
-  color: var(--paper-dim);
+  color: var(--dim);
+  font-family: var(--font-display);
   font-style: italic;
+  font-size: 1.15em;
 }
 
 /* cards */
@@ -84,41 +103,46 @@ main { flex: 1; width: 100%; max-width: var(--max); margin: 0 auto; padding: 2.5
   gap: 1.5rem;
 }
 .card {
-  background: var(--ink-soft);
-  border: 1px solid var(--ink-line);
-  border-radius: 6px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
-.card:hover { border-color: var(--ember); transform: translateY(-2px); }
-.card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
-.card .card-body { padding: 1rem 1.15rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
-.card h3 { font-size: 1.2rem; margin: 0; }
-.card h3 a { color: var(--paper); }
-.card h3 a:hover { color: var(--ember-soft); }
-
-.tag {
-  display: inline-block;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ember-soft);
-}
+.card:hover { border-color: var(--gold); transform: translateY(-3px); }
+.card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; filter: saturate(0.85); }
+.card .card-body { padding: 1.1rem 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1; }
+.card h3 { font-size: 1.35rem; margin: 0; }
+.card h3 a { color: var(--fg); }
+.card h3 a:hover { color: var(--gold); }
 
 .btn {
   display: inline-block;
-  border: 1px solid var(--ember);
-  color: var(--paper);
-  padding: 0.55em 1.3em;
-  border-radius: 3px;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  transition: background 0.2s ease;
+  border: 1px solid rgba(233, 228, 216, 0.5);
+  color: var(--fg);
+  padding: 0.8em 1.9em;
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
 }
-.btn:hover { background: var(--ember); color: #fff; }
+.btn:hover { border-color: var(--gold); color: var(--gold); }
+.btn.gold { border-color: var(--gold); color: var(--gold); }
+.btn.gold:hover { background: var(--gold); color: var(--bg); }
+
+.hair { width: 56px; border-top: 1px solid var(--gold); margin: 18px auto 0; }
+
+.sec-head { text-align: center; margin-bottom: 46px; }
+.sec-head h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 2.4rem;
+  margin: 10px 0 0;
+}
 
 @media (max-width: 640px) {
-  body { font-size: 1rem; }
+  body { font-size: 16px; }
 }

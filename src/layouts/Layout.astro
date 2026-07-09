@@ -4,9 +4,11 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  /** transparent header laid over a full-bleed hero (home page) */
+  overlayHeader?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, overlayHeader = false } = Astro.props;
 const fullTitle = title ? `${title} | liūdni slibinai` : `liūdni slibinai | „grupė“`;
 const desc = description ??
   "Liūdnas lietuvio gyvenimo detales apdainuojanti, teatrališkai išradinga ir muzikaliai sąmoninga „grupė“, gyvuojanti nuo 2008 m.";
@@ -36,9 +38,9 @@ const path = Astro.url.pathname;
     <title>{fullTitle}</title>
   </head>
   <body>
-    <header>
-      <div class="header-inner">
-        <a class="wordmark" href="/">liūdni slibinai <span class="grupe">„grupė“</span></a>
+    <header class:list={[overlayHeader && "overlay"]}>
+      <div class="topbar">
+        <a class="wordmark" href="/">liūdni slibinai</a>
         <input type="checkbox" id="nav-toggle" aria-hidden="true" />
         <label for="nav-toggle" class="nav-burger" aria-label="Meniu">☰</label>
         <nav>
@@ -50,18 +52,19 @@ const path = Astro.url.pathname;
     </header>
 
     <main>
-      <slot />
+      {overlayHeader ? <slot /> : <div class="wrap page-pad"><slot /></div>}
     </main>
 
     <footer>
       <div class="footer-inner">
-        <div class="footer-social">
+        <div class="soc">
           <a href="https://open.spotify.com/artist/6zjXlMyonWlkxRMNrlOIrR" target="_blank" rel="noopener">Spotify</a>
           <a href="https://www.youtube.com/@liudnislibinai" target="_blank" rel="noopener">YouTube</a>
           <a href="https://www.instagram.com/liudnislibinai/" target="_blank" rel="noopener">Instagram</a>
-          <a href="mailto:info@liudnislibinai.lt">info@liudnislibinai.lt</a>
         </div>
-        <p class="muted small">© {new Date().getFullYear()} liūdni slibinai. Liūdesys — nuo 2008 m.</p>
+        <p class="muted small">
+          <a href="mailto:info@liudnislibinai.lt">info@liudnislibinai.lt</a> · © {new Date().getFullYear()} liūdni slibinai — liūdesys nuo 2008 m.
+        </p>
       </div>
     </footer>
   </body>
@@ -69,48 +72,52 @@ const path = Astro.url.pathname;
 
 <style>
   header {
-    border-bottom: 1px solid var(--ink-line);
-    background: rgba(20, 22, 28, 0.92);
-    backdrop-filter: blur(6px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
   }
-  .header-inner {
-    max-width: var(--max);
+  header.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    background: transparent;
+    border-bottom: 0;
+  }
+  .topbar {
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 0.9rem 1.25rem;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    padding: 24px 34px;
     gap: 1rem;
     flex-wrap: wrap;
   }
   .wordmark {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: 1.35rem;
-    color: var(--paper);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--fg);
     white-space: nowrap;
   }
-  .grupe { color: var(--ember-soft); font-size: 0.85em; }
-  nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+  nav { display: flex; gap: 24px; flex-wrap: wrap; }
   nav a {
-    color: var(--paper-dim);
-    font-size: 0.92rem;
-    letter-spacing: 0.06em;
+    font-size: 12px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
+    color: #cfc9bc;
   }
-  nav a:hover, nav a.active { color: var(--paper); }
-  nav a.active { border-bottom: 2px solid var(--ember); padding-bottom: 2px; }
+  nav a:hover, nav a.active { color: var(--gold); }
 
   #nav-toggle, .nav-burger { display: none; }
 
-  @media (max-width: 760px) {
+  @media (max-width: 860px) {
     .nav-burger {
       display: block;
-      color: var(--paper);
-      font-size: 1.4rem;
+      color: var(--fg);
+      font-size: 1.35rem;
       cursor: pointer;
       user-select: none;
     }
@@ -118,24 +125,32 @@ const path = Astro.url.pathname;
       display: none;
       width: 100%;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.8rem;
       padding: 0.75rem 0 0.5rem;
     }
     #nav-toggle:checked ~ nav { display: flex; }
+    header.overlay { position: static; background: var(--bg); border-bottom: 1px solid var(--line); }
   }
 
-  footer { border-top: 1px solid var(--ink-line); }
+  footer { border-top: 1px solid var(--line); }
   .footer-inner {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 1.75rem 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    flex-wrap: wrap;
+    padding: 3.2rem 1.5rem 3.6rem;
+    text-align: center;
   }
-  .footer-social { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-  .footer-social a { color: var(--paper-dim); font-size: 0.92rem; }
-  .footer-social a:hover { color: var(--ember-soft); }
+  .soc {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 11.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .soc a { color: var(--dim); }
+  .soc a:hover { color: var(--gold); }
+  .footer-inner p a { color: var(--dim); }
+  .footer-inner p a:hover { color: var(--gold); }
 </style>
