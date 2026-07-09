@@ -126,3 +126,16 @@ export function galleryImages(g: Gallery): GalleryImage[] {
 }
 
 export const formatDate = (iso?: string) => (iso ? iso.slice(0, 10).replaceAll("-", " ") : "");
+
+/**
+ * Downscaled wixstatic rendition: `scaled(url, w)` fits inside w×w keeping the
+ * aspect ratio; `scaled(url, w, h)` fills (crops) to exactly w×h. Originals
+ * stay untouched — use them for lightbox links.
+ */
+export function scaled(url: string, w: number, h?: number): string;
+export function scaled(url: string | undefined, w: number, h?: number): string | undefined;
+export function scaled(url: string | undefined, w: number, h?: number) {
+  if (!url?.includes("static.wixstatic.com/media/") || url.includes("/v1/")) return url;
+  const op = h ? `fill/w_${w},h_${h},al_c` : `fit/w_${w},h_${w}`;
+  return `${url}/v1/${op},q_85/img.jpg`;
+}

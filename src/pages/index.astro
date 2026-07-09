@@ -1,11 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getPosts, getAlbums, formatDate } from "../lib/cms";
+import { getPosts, getAlbums, formatDate, scaled } from "../lib/cms";
 
 const [posts, albums] = await Promise.all([getPosts(4), getAlbums()]);
 
-const HERO_IMG = "https://static.wixstatic.com/media/9d3f58_a7ad7139d77d4e7c8275f45eab870399~mv2.jpg";
-const BAND_IMG = "https://static.wixstatic.com/media/9d3f58_af47f689a1a5497792eee5d1fe4414e2~mv2.jpg";
+const HERO_IMG = scaled("https://static.wixstatic.com/media/9d3f58_a7ad7139d77d4e7c8275f45eab870399~mv2.jpg", 1920);
+const BAND_IMG = scaled("https://static.wixstatic.com/media/9d3f58_af47f689a1a5497792eee5d1fe4414e2~mv2.jpg", 1920);
 ---
 
 <Layout overlayHeader>
@@ -60,7 +60,7 @@ const BAND_IMG = "https://static.wixstatic.com/media/9d3f58_af47f689a1a5497792ee
         <div class="albums">
           {albums.map((a) => (
             <a class="alb" href="/albumai">
-              <div class="img">{a.cover && <img src={a.cover} alt={a.title} loading="lazy" />}</div>
+              <div class="img">{a.cover && <img src={scaled(a.cover, 480, 480)} width="480" height="480" alt={a.title} loading="lazy" decoding="async" />}</div>
               <h3>{a.title}</h3>
               <div class="yr">{a.year}</div>
             </a>

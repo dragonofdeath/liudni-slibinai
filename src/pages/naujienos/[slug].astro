@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getPostBySlug, formatDate } from "../../lib/cms";
+import { getPostBySlug, formatDate, scaled } from "../../lib/cms";
 
 const { slug } = Astro.params;
 const post = await getPostBySlug(slug!);
@@ -12,7 +12,7 @@ if (!post) return Astro.redirect("/naujienos");
     <span class="tag">{post.categories || "Naujiena"} · {formatDate(post.date)}</span>
     <h1 class="page-title">{post.title}</h1>
     {post.coverImage && !post.coverInBody && (
-      <img class="cover" src={post.coverImage} alt={post.title} />
+      <img class="cover" src={scaled(post.coverImage, 920)} alt={post.title} />
     )}
     <div class="prose" set:html={post.body} />
   </article>

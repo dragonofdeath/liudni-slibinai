@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getGalleries, galleryImages } from "../../lib/cms";
+import { getGalleries, galleryImages, scaled } from "../../lib/cms";
 
 const galleries = await getGalleries();
 ---
@@ -12,7 +12,7 @@ const galleries = await getGalleries();
       const imgs = galleryImages(g);
       return (
         <a class="card" href={`/foto/${g.slug}`}>
-          {imgs[0] && <img src={imgs[0].url} width={imgs[0].w} height={imgs[0].h} alt={g.title} loading="lazy" />}
+          {imgs[0] && <img src={scaled(imgs[0].url, 640, 400)} width="640" height="400" alt={g.title} loading="lazy" decoding="async" />}
           <div class="card-body">
             <h3>{g.title}</h3>
             <span class="muted small">{imgs.length} nuotr.</span>

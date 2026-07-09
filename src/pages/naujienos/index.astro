@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getPosts, formatDate } from "../../lib/cms";
+import { getPosts, formatDate, scaled } from "../../lib/cms";
 
 const PER_PAGE = 24;
 const page = Math.max(1, Number(Astro.url.searchParams.get("puslapis")) || 1);
@@ -35,7 +35,7 @@ const pageUrl = (n: number) =>
   <div class="card-grid">
     {posts.map((p) => (
       <article class="card">
-        {p.coverImage && <a href={`/naujienos/${p.slug}`}><img src={p.coverImage} alt={p.title} loading="lazy" /></a>}
+        {p.coverImage && <a href={`/naujienos/${p.slug}`}><img src={scaled(p.coverImage, 640, 400)} width="640" height="400" alt={p.title} loading="lazy" decoding="async" /></a>}
         <div class="card-body">
           <span class="tag">{formatDate(p.date)}</span>
           <h3><a href={`/naujienos/${p.slug}`}>{p.title}</a></h3>

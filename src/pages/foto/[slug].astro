@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getGalleryBySlug, galleryImages } from "../../lib/cms";
+import { getGalleryBySlug, galleryImages, scaled } from "../../lib/cms";
 
 const { slug } = Astro.params;
 const gallery = await getGalleryBySlug(slug!);
@@ -13,7 +13,7 @@ const imgs = galleryImages(gallery);
   <div class="masonry">
     {imgs.map((img, i) => (
       <a href={img.url} target="_blank" rel="noopener">
-        <img src={img.url} width={img.w} height={img.h} alt={`${gallery.title} — ${i + 1}`} loading="lazy" />
+        <img src={scaled(img.url, 900)} width={img.w} height={img.h} alt={`${gallery.title} — ${i + 1}`} loading="lazy" decoding="async" />
       </a>
     ))}
   </div>

@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getAlbums } from "../lib/cms";
+import { getAlbums, scaled } from "../lib/cms";
 
 const albums = await getAlbums();
 const links = (a: (typeof albums)[number]) => [
@@ -17,7 +17,7 @@ const links = (a: (typeof albums)[number]) => [
   <div class="albums">
     {albums.map((a) => (
       <article class="album">
-        {a.cover && <img src={a.cover} alt={a.title} loading="lazy" />}
+        {a.cover && <img src={scaled(a.cover, 520, 520)} width="520" height="520" alt={a.title} loading="lazy" decoding="async" />}
         <div class="album-info">
           <span class="tag">{a.year}</span>
           <h2>{a.title}</h2>
