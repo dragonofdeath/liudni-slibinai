@@ -17,7 +17,7 @@ const desc = description ??
 const nav = [
   { href: "/naujienos", label: "Naujienos" },
   { href: "/albumai", label: "Albumai" },
-  { href: "/video", label: "Video" },
+  { href: "https://www.youtube.com/@liudnislibinai", label: "Video", external: true },
   { href: "/foto", label: "Foto" },
   { href: "/tekstai", label: "Tekstai" },
   { href: "/apie", label: "Apie" },
@@ -51,7 +51,12 @@ const path = Astro.url.pathname;
         <label for="nav-toggle" class="nav-burger" aria-label="Meniu">☰</label>
         <nav>
           {nav.map((item) => (
-            <a href={item.href} class:list={[path.startsWith(item.href) && "active"]}>{item.label}</a>
+            <a
+              href={item.href}
+              class:list={[!item.external && path.startsWith(item.href) && "active"]}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener" : undefined}
+            >{item.label}</a>
           ))}
         </nav>
       </div>
