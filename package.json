@@ -8,7 +8,7 @@
     "build": "wix build",
     "wix": "wix",
     "preview": "wix preview",
-    "release": "wix release",
+    "release": "wix build && wix release",
     "generate": "wix generate",
     "env": "wix env",
     "skills": "wix skills"

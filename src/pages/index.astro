@@ -129,9 +129,9 @@ const BAND_IMG = "https://static.wixstatic.com/media/9d3f58_af47f689a1a5497792ee
   .alb h3 { font-style: italic; font-weight: 600; font-size: 20px; margin: 16px 0 0; }
   .alb .yr { font-size: 12px; letter-spacing: 0.26em; color: var(--dim); margin-top: 4px; }
 
-  .band { margin-top: 100px; position: relative; height: 380px; overflow: hidden; }
+  .band { margin-top: 100px; position: relative; height: clamp(340px, 32vw, 560px); overflow: hidden; }
   .band img {
-    width: 100%; height: 100%; object-fit: cover; object-position: center 35%;
+    width: 100%; height: 100%; object-fit: cover; object-position: center 62%;
     filter: saturate(0.7) brightness(0.5);
   }
   .band .in {
