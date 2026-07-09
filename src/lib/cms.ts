@@ -73,14 +73,22 @@ async function safeFind<T>(build: () => Promise<{ items: unknown[] }>): Promise<
   }
 }
 
+// listing projection — bodies are only fetched on the detail page
 export const getPosts = (limit = 100, skip = 0) =>
-  safeFind<Post>(() => query("posts").descending("date").skip(skip).limit(limit).find());
+  safeFind<Post>(() =>
+    query("posts")
+      .fields("title", "slug", "date", "categories", "excerpt", "coverImage")
+      .descending("date")
+      .skip(skip)
+      .limit(limit)
+      .find()
+  );
 
 export const getPostBySlug = async (slug: string) =>
   (await safeFind<Post>(() => query("posts").eq("slug", slug).limit(1).find()))[0] ?? null;
 
 export const getSongs = () =>
-  safeFind<Song>(() => query("songs").ascending("title").limit(200).find());
+  safeFind<Song>(() => query("songs").fields("title", "slug").ascending("title").limit(200).find());
 
 export const getSongBySlug = async (slug: string) =>
   (await safeFind<Song>(() => query("songs").eq("slug", slug).limit(1).find()))[0] ?? null;

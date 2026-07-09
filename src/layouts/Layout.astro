@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
@@ -40,6 +41,7 @@ const path = Astro.url.pathname;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={desc} />
     <title>{fullTitle}</title>
+    <ClientRouter />
   </head>
   <body>
     <header class:list={[overlayHeader && "overlay"]}>
